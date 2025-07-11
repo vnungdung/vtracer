@@ -17,6 +17,7 @@ mod canvas;
 mod common;
 mod svg;
 mod utils;
+mod ffi;
 
 #[wasm_bindgen(start)]
 pub fn main() {

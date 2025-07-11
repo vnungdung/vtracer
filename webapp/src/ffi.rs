@@ -1,5 +1,6 @@
-use std::ffi::{CStr};
-use libc::{c_char, c_int};
+use std::ffi::CStr;
+use std::os::raw::{c_char, c_int, c_uchar};
+use std::slice;
 
 use crate::conversion::binary_image::{BinaryImageConverter, BinaryImageConverterParams};
 use crate::conversion::color_image::{ColorImageConverter, ColorImageConverterParams};
@@ -30,7 +31,7 @@ pub extern "C" fn vtracer_binary_from_bytes(
     let params: BinaryImageConverterParams = serde_json::from_str(json).unwrap();
 
     let bytes = unsafe { slice::from_raw_parts(data, len) };
-    let converter = BinaryImageConverter::from_bytes(params, bytes, width, height);
+    let converter = BinaryImageConverter::from_bytes(bytes, width, height, params);
     Box::into_raw(Box::new(converter))
 }
 
@@ -101,7 +102,7 @@ pub extern "C" fn vtracer_color_from_bytes(
     let params: ColorImageConverterParams = serde_json::from_str(json).unwrap();
 
     let bytes = unsafe { slice::from_raw_parts(data, len) };
-    let converter = ColorImageConverter::from_bytes(params, bytes, width, height);
+    let converter = ColorImageConverter::from_bytes(bytes, width, height, params);
     Box::into_raw(Box::new(converter))
 }
 

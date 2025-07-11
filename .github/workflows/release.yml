@@ -9,22 +9,100 @@ jobs:
     strategy:
       matrix:
         include:
-          - target: aarch64-unknown-linux-musl
+          - bin: cmdapp
+            manifest: cmdapp/Cargo.toml
             os: ubuntu-latest
-          - target: x86_64-unknown-linux-musl
+            target: aarch64-unknown-linux-musl
+          - bin: cmdapp
+            manifest: cmdapp/Cargo.toml
             os: ubuntu-latest
-          - target: aarch64-apple-darwin
+            target: x86_64-unknown-linux-musl
+          - bin: cmdapp
+            manifest: cmdapp/Cargo.toml
             os: macos-latest
-          - target: x86_64-apple-darwin
+            target: aarch64-apple-darwin
+          - bin: cmdapp
+            manifest: cmdapp/Cargo.toml
             os: macos-latest
-          - target: x86_64-pc-windows-msvc
+            target: x86_64-apple-darwin
+          - bin: cmdapp
+            manifest: cmdapp/Cargo.toml
             os: windows-latest
+            target: x86_64-pc-windows-msvc
+
+          - bin: webapp
+            manifest: webapp/Cargo.toml
+            os: ubuntu-latest
+            target: aarch64-unknown-linux-musl
+          - bin: webapp
+            manifest: webapp/Cargo.toml
+            os: ubuntu-latest
+            target: x86_64-unknown-linux-musl
+          - bin: webapp
+            manifest: webapp/Cargo.toml
+            os: macos-latest
+            target: aarch64-apple-darwin
+          - bin: webapp
+            manifest: webapp/Cargo.toml
+            os: macos-latest
+            target: x86_64-apple-darwin
+          - bin: webapp
+            manifest: webapp/Cargo.toml
+            os: windows-latest
+            target: x86_64-pc-windows-msvc
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
-      - uses: taiki-e/upload-rust-binary-action@v1
+      - name: Install Rust target
+        run: rustup target add ${{ matrix.target }}
+      - name: Build and upload binary
+        uses: taiki-e/upload-rust-binary-action@v1
         with:
-          bin: vtracer
+          manifest_path: ${{ matrix.manifest }}
+          bin: ${{ matrix.bin }}
           target: ${{ matrix.target }}
           # (required) GitHub token for uploading assets to GitHub Releases.
           token: ${{ secrets.GITHUB_TOKEN }}
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+
+# name: Release
+
+# on:
+#   release:
+#     types: [published]
+
+# jobs:
+#   release:
+#     strategy:
+#       matrix:
+#         include:
+#           - target: aarch64-unknown-linux-musl
+#             os: ubuntu-latest
+#           - target: x86_64-unknown-linux-musl
+#             os: ubuntu-latest
+#           - target: aarch64-apple-darwin
+#             os: macos-latest
+#           - target: x86_64-apple-darwin
+#             os: macos-latest
+#           - target: x86_64-pc-windows-msvc
+#             os: windows-latest
+#     runs-on: ${{ matrix.os }}
+#     steps:
+#       - uses: actions/checkout@v4
+#       - uses: taiki-e/upload-rust-binary-action@v1
+#         with:
+#           bin: vtracer
+#           target: ${{ matrix.target }}
+#           # (required) GitHub token for uploading assets to GitHub Releases.
+#           token: ${{ secrets.GITHUB_TOKEN }}

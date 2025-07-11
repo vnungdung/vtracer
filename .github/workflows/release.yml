@@ -99,27 +99,27 @@ jobs:
           cp artifacts/webapp-linux-x64/*  nuget/runtimes/linux-x64/native/
           cp artifacts/webapp-osx-x64/*    nuget/runtimes/osx-x64/native/
 
-      - name: Install cargo-nuget from private repo
+      - name: Install cargo-nuget from private GitHub repo
         env:
           CARGO_NET_GIT_FETCH_WITH_CLI: true
-          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
+          GH_PAT: ${{ secrets.GH_PAT }}
         run: |
-          git config --global url."https://${{ secrets.GH_PAT }}@github.com/".insteadOf "https://github.com/"
+          git config --global url."https://${GH_PAT}@github.com/".insteadOf "https://github.com/"
           cargo install cargo-nuget --git https://github.com/vnungdung/cargo-nuget
 
       - name: Build NuGet package
         run: |
+          cd webapp
           cargo-nuget cross \
-            --manifest-path webapp/Cargo.toml \
             --targets win-x64 linux-x64 osx-x64 \
-            --win-x64-path nuget/runtimes/win-x64/native/vtracer_webapp.dll \
-            --linux-x64-path nuget/runtimes/linux-x64/native/libvtracer_webapp.so \
-            --osx-x64-path nuget/runtimes/osx-x64/native/libvtracer_webapp.dylib
+            --win-x64-path ../nuget/runtimes/win-x64/native/vtracer_webapp.dll \
+            --linux-x64-path ../nuget/runtimes/linux-x64/native/libvtracer_webapp.so \
+            --osx-x64-path ../nuget/runtimes/osx-x64/native/libvtracer_webapp.dylib
 
       - name: Upload .nupkg to GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          files: target/package/*.nupkg
+          files: webapp/target/package/*.nupkg
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 

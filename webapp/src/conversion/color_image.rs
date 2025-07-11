@@ -99,7 +99,7 @@ impl ColorImageConverter {
 
         Self {
             canvas: None,
-            svg: Some(Svg::default()),
+            svg: Some(Svg::new_from_id(&params.svg_id)),
             stage: Stage::Clustering(runner.start()),
             counter: 0,
             mode: util::path_simplify_mode(&params.mode),

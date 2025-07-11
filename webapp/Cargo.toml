@@ -1,6 +1,6 @@
 [package]
 name = "vtracer-webapp"
-version = "1.0.0"
+version = "1.0.1"
 authors = ["Chris Tsang <chris.2y3@outlook.com>"]
 edition = "2021"
 description = "A web app to convert images into vector graphics."

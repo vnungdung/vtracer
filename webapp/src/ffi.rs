@@ -1,9 +1,8 @@
 use std::ffi::{CStr};
 use libc::{c_char, c_int};
 
-use crate::binary_image::BinaryImageConverter;
-use crate::color_image::{ColorImageConverter, ColorImageConverterParams};
-use crate::binary_image::BinaryImageConverterParams;
+use crate::conversion::binary_image::{BinaryImageConverter, BinaryImageConverterParams};
+use crate::conversion::color_image::{ColorImageConverter, ColorImageConverterParams};
 
 // ===========================
 // === BinaryImageConverter ===

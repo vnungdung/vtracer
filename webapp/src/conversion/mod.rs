@@ -1,3 +1,3 @@
-mod binary_image;
-mod color_image;
+pub mod binary_image;
+pub mod color_image;
 mod util;

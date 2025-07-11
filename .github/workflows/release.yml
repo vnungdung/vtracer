@@ -84,7 +84,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Download webapp artifacts
+      - name: Download all artifacts
         uses: actions/download-artifact@v4
         with:
           path: artifacts/
@@ -115,25 +115,32 @@ jobs:
             --win-x64-path ../nuget/runtimes/win-x64/native/vtracer_webapp.dll \
             --linux-x64-path ../nuget/runtimes/linux-x64/native/libvtracer_webapp.so \
             --osx-x64-path ../nuget/runtimes/osx-x64/native/libvtracer_webapp.dylib
+          cd ..
 
-      - name: Rename CLI binaries for upload
+      - name: Rename CLI binaries
         run: |
           mkdir -p release
           cp artifacts/cli-x86_64-pc-windows-msvc/vtracer.exe release/vtracer-windows.exe
           cp artifacts/cli-x86_64-unknown-linux-gnu/vtracer release/vtracer-linux
           cp artifacts/cli-x86_64-apple-darwin/vtracer release/vtracer-macos
 
-      - name: Upload .nupkg to GitHub Release
-        uses: softprops/action-gh-release@v2
-        with:
-          files: webapp/*.nupkg
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Organize final release structure
+        run: |
+          mkdir -p final-release/cli
+          mkdir -p final-release/nuget
 
-      - name: Upload CLI binaries to Release
+          cp release/* final-release/cli/
+          cp webapp/*.nupkg final-release/nuget/
+
+          echo "VTracer Release - CLI and NuGet packages included." > final-release/README.txt
+
+      - name: Create release archive (.zip)
+        run: |
+          zip -r release-vtracer-${{ github.event.release.tag_name }}.zip final-release/
+
+      - name: Upload full release ZIP
         uses: softprops/action-gh-release@v2
         with:
-          files: release/*
-          fail_on_unmatched_files: false
+          files: release-vtracer-${{ github.event.release.tag_name }}.zip
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_T

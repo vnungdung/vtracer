@@ -10,6 +10,10 @@ repository = "https://github.com/visioncortex/vtracer/"
 categories = ["graphics"]
 keywords = ["svg", "computer-graphics"]
 
+[[bin]]
+name = "vtracer-webapp"
+path = "src/lib.rs"
+
 [lib]
 crate-type = ["cdylib"]
 

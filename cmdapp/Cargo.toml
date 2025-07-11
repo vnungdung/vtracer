@@ -10,6 +10,10 @@ repository = "https://github.com/visioncortex/vtracer/"
 categories = ["graphics"]
 keywords = ["svg", "computer-graphics"]
 
+[[bin]]
+name = "vtracer"
+path = "src/main.rs"
+
 [dependencies]
 clap = "2.33.3"
 image = "0.23.10"

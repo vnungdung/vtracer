@@ -99,8 +99,13 @@ jobs:
           cp artifacts/webapp-linux-x64/*  nuget/runtimes/linux-x64/native/
           cp artifacts/webapp-osx-x64/*    nuget/runtimes/osx-x64/native/
 
-      - name: Install cargo-nuget
-        run: cargo install cargo-nuget --git https://github.com/johnthagen/cargo-nuget
+      - name: Install cargo-nuget from private repo
+        env:
+          CARGO_NET_GIT_FETCH_WITH_CLI: true
+          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
+        run: |
+          git config --global url."https://${{ secrets.GH_PAT }}@github.com/".insteadOf "https://github.com/"
+          cargo install cargo-nuget --git https://github.com/vnungdung/cargo-nuget
 
       - name: Build NuGet package
         run: |

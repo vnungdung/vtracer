@@ -18,6 +18,23 @@ pub extern "C" fn vtracer_binary_init(json_params: *const c_char) -> *mut Binary
 }
 
 #[no_mangle]
+pub extern "C" fn vtracer_binary_from_bytes(
+    json_params: *const c_char,
+    data: *const c_uchar,
+    len: usize,
+    width: usize,
+    height: usize,
+) -> *mut BinaryImageConverter {
+    let c_str = unsafe { CStr::from_ptr(json_params) };
+    let json = c_str.to_str().unwrap();
+    let params: BinaryImageConverterParams = serde_json::from_str(json).unwrap();
+
+    let bytes = unsafe { slice::from_raw_parts(data, len) };
+    let converter = BinaryImageConverter::from_bytes(params, bytes, width, height);
+    Box::into_raw(Box::new(converter))
+}
+
+#[no_mangle]
 pub extern "C" fn vtracer_binary_init_state(ptr: *mut BinaryImageConverter) {
     if !ptr.is_null() {
         let converter = unsafe { &mut *ptr };
@@ -69,6 +86,23 @@ pub extern "C" fn vtracer_color_init_state(ptr: *mut ColorImageConverter) {
         let converter = unsafe { &mut *ptr };
         converter.init();
     }
+}
+
+#[no_mangle]
+pub extern "C" fn vtracer_color_from_bytes(
+    json_params: *const c_char,
+    data: *const c_uchar,
+    len: usize,
+    width: usize,
+    height: usize,
+) -> *mut ColorImageConverter {
+    let c_str = unsafe { CStr::from_ptr(json_params) };
+    let json = c_str.to_str().unwrap();
+    let params: ColorImageConverterParams = serde_json::from_str(json).unwrap();
+
+    let bytes = unsafe { slice::from_raw_parts(data, len) };
+    let converter = ColorImageConverter::from_bytes(params, bytes, width, height);
+    Box::into_raw(Box::new(converter))
 }
 
 #[no_mangle]

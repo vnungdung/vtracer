@@ -109,7 +109,7 @@ jobs:
 
       - name: Build NuGet package
         run: |
-          cargo nuget cross \
+          cargo-nuget cross \
             --manifest-path webapp/Cargo.toml \
             --targets win-x64 linux-x64 osx-x64 \
             --win-x64-path nuget/runtimes/win-x64/native/vtracer_webapp.dll \
